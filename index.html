@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Mandarin 12 Minggu</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{font-family:Inter,system-ui,sans-serif;background:#faf7f2;color:#292524}.dark body{background:#1c1917;color:#e7e5e4}.hz{font-family:'Noto Sans SC',sans-serif}</style></head>
+<body class="min-h-screen"><div class="max-w-4xl mx-auto p-3 sm:p-5">
+<header class="flex items-center justify-between mb-3"><h1 class="text-xl font-bold text-red-900 dark:text-amber-300"><span class="hz">学中文</span> · 12 Minggu</h1>
+<button onclick="S.dark=!S.dark;save();render()" class="p-2 rounded-lg bg-amber-100 dark:bg-stone-700" aria-label="Mode gelap"><i data-lucide="moon"></i></button></header>
+<div id="bar" class="flex flex-wrap gap-2 mb-3"></div><nav id="nav" class="flex gap-1 overflow-x-auto mb-4"></nav><main id="main"></main></div>
+<script>
+const D=`你|nǐ|kamu|你是学生。|Kamu adalah pelajar.
+好|hǎo|baik|你好！|Halo!
+您|nín|Anda (hormat)|您好！|Halo, Bapak atau Ibu!
+我|wǒ|saya|我是印尼人。|Saya orang Indonesia.
+他|tā|dia (laki-laki)|他是我的朋友。|Dia temanku.
+她|tā|dia (perempuan)|她是老师。|Dia seorang guru.
+们|men|(akhiran jamak)|我们是朋友。|Kami adalah teman.
+是|shì|adalah|我是学生。|Saya pelajar.
+不|bù|tidak|我不是老师。|Saya bukan guru.
+谢谢|xièxie|terima kasih|谢谢你！|Terima kasih!
+再见|zàijiàn|sampai jumpa|明天再见！|Sampai jumpa besok!
+对不起|duìbuqǐ|maaf|对不起，我来晚了。|Maaf, saya terlambat.
+没关系|méi guānxi|tidak apa-apa|没关系，请坐。|Tidak apa-apa, silakan duduk.
+请|qǐng|silakan|请喝茶。|Silakan minum teh.
+名字|míngzi|nama|你的名字是什么？|Siapa namamu?
+叫|jiào|bernama|我叫小明。|Saya bernama Xiaoming.
+什么|shénme|apa|这是什么？|Ini apa?
+人|rén|orang|他是好人。|Dia orang baik.
+中国|Zhōngguó|Tiongkok|我想去中国。|Saya ingin pergi ke Tiongkok.
+印尼|Yìnní|Indonesia|我住在印尼。|Saya tinggal di Indonesia.
+一|yī|satu|我有一个朋友。|Saya punya satu teman.
+二|èr|dua|我二十岁。|Saya berumur dua puluh tahun.
+三|sān|tiga|三个人。|Tiga orang.
+四|sì|empat|四点见面。|Bertemu jam empat.
+五|wǔ|lima|五块钱。|Lima yuan.
+六|liù|enam|六点起床。|Bangun jam enam.
+七|qī|tujuh|一周有七天。|Seminggu ada tujuh hari.
+八|bā|delapan|八点上课。|Kelas mulai jam delapan.
+九|jiǔ|sembilan|九月开学。|Sekolah mulai bulan sembilan.
+十|shí|sepuluh|十个学生。|Sepuluh murid.
+吃|chī|makan|我想吃饭。|Saya mau makan.
+喝|hē|minum|你喝水吗？|Kamu minum air?
+水|shuǐ|air|我要一杯水。|Saya minta segelas air.
+饭|fàn|nasi, makanan|饭很好吃。|Nasinya enak.
+茶|chá|teh|我喜欢喝茶。|Saya suka minum teh.
+家|jiā|rumah, keluarga|我在家。|Saya di rumah.
+爸爸|bàba|ayah|爸爸在家。|Ayah di rumah.
+妈妈|māma|ibu|妈妈做饭。|Ibu memasak.
+朋友|péngyou|teman|我有很多朋友。|Saya punya banyak teman.
+学生|xuésheng|pelajar|学生在学校。|Pelajar ada di sekolah.`;
+const V=D.split('\n').map((l,i)=>{const[h,p,a,s,t]=l.split('|');return{id:i,h,p,a,s,t}});
+const TH=['Sapaan & Angka Dasar','Keluarga & Makanan','Waktu & Tanggal','Belanja & Uang','Transportasi & Arah','Tempat & Cuaca','Aktivitas Harian','Kesehatan & Tubuh','Pekerjaan & Sekolah','Hobi & Perjalanan','Opini & Perbandingan','Review & Simulasi Percakapan'];
+const DN=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu (Review)','Minggu (Exam)'];
+const MS=['Survival Mandarin','Daily Conversation','Fluent & Practical'];
+const $=s=>document.querySelector(s),C='bg-white dark:bg-stone-800 rounded-2xl p-4 shadow-sm border border-amber-100 dark:border-stone-700',BTN='px-4 py-2 rounded-xl font-semibold bg-red-900 text-amber-100 hover:bg-red-800';
+let S=load(),tab='dash',Q=null,card=0,flip=false,tm=null;
+function load(){const b={act:{},mas:{},ex:{},dq:{},dark:false,w:1,d:1,rate:1};try{return Object.assign(b,{dark:matchMedia('(prefers-color-scheme: dark)').matches},JSON.parse(localStorage.getItem('mdr')||'{}'))}catch(e){return b}}
+function save(){try{localStorage.setItem('mdr',JSON.stringify(S))}catch(e){}}
+const today=()=>new Date().toISOString().slice(0,10),shuf=a=>[...a].sort(()=>Math.random()-.5);
+function hit(){S.act[today()]=(S.act[today()]||0)+1;save()}
+function spk(t){if(!('speechSynthesis' in window)){alert('Browser tidak mendukung suara.');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=S.rate;speechSynthesis.speak(u)}
+const wk=w=>V.slice((w-1)*100,w*100);
+function words(w,d){if(d<=5)return V.slice((w-1)*100+(d-1)*20,(w-1)*100+d*20);return shuf(wk(w)).slice(0,d==6?20:50)}
+function mk(ws){return ws.map(x=>{const t=['h','p','l'][Math.random()*3|0],k=t=='p'?'p':'a';const o=shuf([...new Set([x[k],...shuf(V.filter(v=>v[k]!=x[k])).slice(0,3).map(v=>v[k])])]);return{x,t,o,c:x[k]}})}
+function startQ(kind){const ws=words(S.w,kind=='exam'?7:S.d);if(ws.length<4){Q={err:1};return render()}
+Q={kind,qs:mk(ws),i:0,ok:0,bad:[],ans:null,left:kind=='exam'?ws.length*40:0};clearInterval(tm);
+if(kind=='exam')tm=setInterval(()=>{Q.left--;const e=$('#tm');if(e)e.textContent=fmt(Q.left);if(Q.left<=0)finish()},1000);render();autoPlay()}
+const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+function autoPlay(){const q=Q&&Q.qs&&Q.qs[Q.i];if(q&&q.t=='l'&&Q.done==null)setTimeout(()=>spk(q.x.h),300)}
+function pick(i){if(Q.ans!=null)return;Q.ans=i;const q=Q.qs[Q.i];if(q.o[i]==q.c){Q.ok++;S.mas[q.x.id]=1}else Q.bad.push(q);hit();save();render()}
+function nextQ(){Q.i++;Q.ans=null;Q.i>=Q.qs.length?finish():(render(),autoPlay())}
+function finish(){clearInterval(tm);if(Q.done!=null)return;const s=Math.round(Q.ok/Q.qs.length*100);Q.done=s;Q.kind=='exam'?S.ex[S.w]=s:S.dq[S.w+'-'+S.d]=s;save();render()}
+function setTab(t){tab=t;Q=null;clearInterval(tm);flip=false;render()}
+const sp=(t,c='')=>`<button onclick="spk('${t}')" class="p-2 rounded-full bg-amber-100 dark:bg-stone-700 text-red-900 dark:text-amber-300 ${c}" aria-label="Putar suara"><i data-lucide="volume-2"></i></button>`;
+function quizView(kind){
+if(kind=='daily'&&S.d==7)return`<div class="${C}">Hari Minggu adalah <b>Weekend Exam</b>. Buka tab Weekend Exam.</div>`;
+if(!Q)return`<div class="${C} text-center space-y-3"><h2 class="text-lg font-bold">${kind=='exam'?'Weekend Exam Minggu '+S.w:'Kuis Harian: Minggu '+S.w+', '+DN[S.d-1]}</h2><p class="text-sm opacity-80">${kind=='exam'?'Menguji seluruh kosakata minggu ini. Ada timer, skor 0-100, KKM 80.':'Pilihan ganda Hanzi, Pinyin, dan Listening.'}</p><button class="${BTN}" onclick="startQ('${kind}')">Mulai</button></div>`;
+if(Q.err)return`<div class="${C}">Kosakata untuk hari ini belum terisi. Pilih Minggu 1, Hari Senin atau Selasa.</div>`;
+if(Q.done!=null){const ok=Q.done>=80;return`<div class="${C} space-y-3"><div class="text-center"><div class="text-5xl font-bold ${ok?'text-green-600':'text-red-700'}">${Q.done}</div><p class="font-semibold">${ok?'Lulus (KKM 80)':'Belum lulus, KKM 80'}</p></div><h3 class="font-bold">Pembahasan jawaban salah (${Q.bad.length})</h3>${Q.bad.map(q=>`<div class="p-3 rounded-xl bg-red-50 dark:bg-stone-700"><span class="hz text-2xl font-bold">${q.x.h}</span> <span class="text-red-800 dark:text-amber-300">${q.x.p}</span> = ${q.x.a}<br><span class="hz text-sm">${q.x.s}</span> ${sp(q.x.s)}<div class="text-xs opacity-70">${q.x.t}</div></div>`).join('')||'<p>Semua benar!</p>'}<button class="${BTN}" onclick="Q=null;render()">Selesai</button></div>`}
+const q=Q.qs[Q.i];
+const head=q.t=='l'?`<div class="text-center">${sp(q.x.h,'scale-150 m-3')}<p class="text-sm">Dengarkan, lalu pilih artinya</p></div>`:`<div class="text-center"><div class="hz text-6xl font-bold text-red-900 dark:text-amber-300">${q.x.h}</div><p class="text-sm mt-1">${q.t=='p'?'Pilih pinyin yang benar':'Apa arti kata ini?'}</p>${sp(q.x.h)}</div>`;
+return`<div class="${C} space-y-3"><div class="flex justify-between text-sm"><span>Soal ${Q.i+1}/${Q.qs.length}</span>${Q.kind=='exam'?`<span class="font-mono"><i data-lucide="timer" class="inline w-4 h-4"></i> <span id="tm">${fmt(Q.left)}</span></span>`:''}</div>${head}<div class="grid gap-2">${q.o.map((o,i)=>{let c='border-amber-200 dark:border-stone-600';if(Q.ans!=null){if(o==q.c)c='border-green-600 bg-green-100 dark:bg-green-900';else if(i==Q.ans)c='border-red-600 bg-red-100 dark:bg-red-900'}return`<button onclick="pick(${i})" class="text-left p-3 rounded-xl border-2 ${c}">${o}</button>`}).join('')}</div>${Q.ans!=null?`<button class="${BTN} w-full" onclick="nextQ()">${Q.i+1>=Q.qs.length?'Lihat Hasil':'Lanjut'}</button>`:''}</div>`}
+function learnView(){const ws=words(S.w,S.d);if(!ws.length)return`<div class="${C}">Kosakata hari ini belum terisi. Coba Minggu 1, Senin atau Selasa.</div>`;card=Math.min(card,ws.length-1);const x=ws[card];
+return`<div class="${C} text-center space-y-3"><p class="text-sm">Kartu ${card+1}/${ws.length} · ${S.mas[x.id]?'Hafal':'Belum hafal'}</p><div class="hz text-7xl font-bold text-red-900 dark:text-amber-300 py-4" onclick="flip=!flip;render()">${x.h}</div>${sp(x.h)}${flip?`<div class="text-2xl text-red-800 dark:text-amber-300">${x.p}</div><div class="text-lg font-semibold">${x.a}</div><div class="p-3 rounded-xl bg-amber-50 dark:bg-stone-700"><div class="hz text-xl">${x.s}</div><div class="text-sm opacity-75">${x.t}</div>${sp(x.s)}</div>`:'<p class="text-sm opacity-60">Ketuk aksara untuk membuka jawaban</p>'}<div class="flex gap-2 justify-center"><button class="${BTN}" onclick="card=Math.max(0,card-1);flip=false;render()">Sebelumnya</button><button class="px-4 py-2 rounded-xl border-2 border-amber-600" onclick="S.mas[${x.id}]=S.mas[${x.id}]?0:1;hit();render()">Hafal</button><button class="${BTN}" onclick="card=Math.min(${ws.length-1},card+1);flip=false;render()">Berikutnya</button></div></div>`}
+function streak(){let n=0,d=new Date();if(!S.act[today()])d.setDate(d.getDate()-1);while(S.act[d.toISOString().slice(0,10)]){n++;d.setDate(d.getDate()-1)}return n}
+function dashView(){const m=Object.values(S.mas).filter(Boolean).length,pct=(m/12).toFixed(1);
+const cells=[...Array(84)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-83+i);const k=d.toISOString().slice(0,10),n=S.act[k]||0;return`<div title="${k}: ${n}" class="w-3.5 h-3.5 rounded-sm ${n==0?'bg-stone-200 dark:bg-stone-700':n<10?'bg-amber-200':n<30?'bg-amber-500':'bg-red-800'}"></div>`}).join('');
+const bars=[...Array(12)].map((_,i)=>{const s=S.ex[i+1];return`<div class="flex-1 text-center text-xs"><div class="h-28 flex items-end"><div class="w-full rounded-t ${s>=80?'bg-green-600':'bg-red-800'}" style="height:${s||0}%"></div></div>M${i+1}<br>${s??'-'}</div>`}).join('');
+const mon=MS.map((n,i)=>{const c=V.filter(v=>v.id>=i*400&&v.id<(i+1)*400&&S.mas[v.id]).length,e=[1,2,3,4].map(k=>S.ex[i*4+k]).filter(x=>x!=null),av=e.length?Math.round(e.reduce((a,b)=>a+b,0)/e.length):'-';return`<div class="${C}"><div class="text-xs opacity-70">Bulan ${i+1}</div><div class="font-bold">${n}</div><div class="h-2 rounded bg-stone-200 dark:bg-stone-700 my-2"><div class="h-2 rounded bg-amber-500" style="width:${c/4}%"></div></div><div class="text-xs">${c}/400 kata · rata-rata ujian ${av}</div></div>`}).join('');
+return`<div class="space-y-3"><div class="grid grid-cols-3 gap-2 text-center">${[['Dikuasai',m+'/1200'],['Siap Komunikasi',pct+'%'],['Streak',streak()+' hari']].map(a=>`<div class="${C}"><div class="text-xl font-bold text-red-900 dark:text-amber-300">${a[1]}</div><div class="text-xs">${a[0]}</div></div>`).join('')}</div><div class="${C}"><h3 class="font-bold mb-2">Aktivitas 12 minggu</h3><div class="overflow-x-auto"><div class="grid grid-rows-7 grid-flow-col gap-1 w-max">${cells}</div></div></div><div class="${C}"><h3 class="font-bold mb-2">Nilai Weekend Exam (KKM 80)</h3><div class="flex gap-1">${bars}</div></div><div class="grid sm:grid-cols-3 gap-2">${mon}</div></div>`}
+function sylView(){return`<div class="grid sm:grid-cols-2 gap-2">${TH.map((t,i)=>`<button onclick="S.w=${i+1};S.d=1;save();setTab('learn')" class="${C} text-left"><div class="flex justify-between"><b>Minggu ${i+1}</b><span class="text-xs">Bulan ${Math.ceil((i+1)/4)} · HSK ${i<4?1:i<8?2:3}</span></div><div>${t}</div><div class="text-xs opacity-70">100 kata · Sen-Jum 20/hari · Sab review · Min ujian · terisi ${wk(i+1).length}/100</div></button>`).join('')}</div>`}
+const T=[['dash','Dashboard','layout-dashboard'],['learn','Belajar','book-open'],['quiz','Kuis Harian','help-circle'],['exam','Weekend Exam','award'],['syl','Silabus','calendar']];
+function render(){document.documentElement.classList.toggle('dark',S.dark);
+$('#bar').innerHTML=`<select class="p-2 rounded-lg border bg-white dark:bg-stone-800" onchange="S.w=+this.value;card=0;Q=null;save();render()">${TH.map((t,i)=>`<option value="${i+1}" ${S.w==i+1?'selected':''}>Minggu ${i+1}</option>`).join('')}</select><select class="p-2 rounded-lg border bg-white dark:bg-stone-800" onchange="S.d=+this.value;card=0;Q=null;save();render()">${DN.map((t,i)=>`<option value="${i+1}" ${S.d==i+1?'selected':''}>${t}</option>`).join('')}</select><button class="p-2 rounded-lg border" onclick="S.rate=S.rate==1?0.6:1;save();render()">Suara: ${S.rate==1?'Normal 1.0x':'Lambat 0.6x'}</button>`;
+$('#nav').innerHTML=T.map(t=>`<button onclick="setTab('${t[0]}')" class="px-3 py-2 rounded-lg whitespace-nowrap text-sm font-semibold ${tab==t[0]?'bg-red-900 text-amber-100':'bg-amber-100 dark:bg-stone-700'}">${t[1]}</button>`).join('');
+$('#main').innerHTML=({dash:dashView,learn:learnView,quiz:()=>quizView('daily'),exam:()=>quizView('exam'),syl:sylView})[tab]();lucide.createIcons()}
+render();
+</script></body></html>
